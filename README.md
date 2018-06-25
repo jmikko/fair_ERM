@@ -67,17 +67,19 @@ __How to cite:__
 
 The idea of this code is from the following paper:
 
-Donini, Michele, Luca Oneto, Shai Ben-David, John Shawe-Taylor, and Massimiliano Pontil. "Empirical Risk Minimization under Fairness Constraints." arXiv preprint arXiv:1802.08626 (2018).
+*Donini, Michele, Luca Oneto, Shai Ben-David, John Shawe-Taylor, and Massimiliano Pontil. 
+"__Empirical Risk Minimization under Fairness Constraints.__" 
+arXiv preprint arXiv:1802.08626 (2018).*
 
 Bibtex citation:
-
+```
 @article{donini2018empirical,
   title={Empirical Risk Minimization under Fairness Constraints},
   author={Donini, Michele and Oneto, Luca and Ben-David, Shai and Shawe-Taylor, John and Pontil, Massimiliano},
   journal={arXiv preprint arXiv:1802.08626},
   year={2018}
 }
-
+```
 
 Michele Donini.
 
