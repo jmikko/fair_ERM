@@ -68,7 +68,7 @@ __How to cite:__
 The idea of this code is from the following paper:
 
 *Michele Donini, Luca Oneto, Shai Ben-David, John Shawe-Taylor, and Massimiliano Pontil. 
-"__Empirical Risk Minimization under Fairness Constraints.__" 
+"[__Empirical Risk Minimization under Fairness Constraints.__](https://arxiv.org/pdf/1802.08626.pdf)" 
 arXiv preprint arXiv:1802.08626 (2018).* __[ACCEPTED @ NIPS 2018]__
 
 Bibtex citation:
