@@ -18,6 +18,7 @@ class Linear_FERM:
         self.model = model
         self.sensible_feature = sensible_feature
         self.u = None
+        self.max_i = None
 
     def new_representation(self, examples):
         if self.u is None:
@@ -28,16 +29,19 @@ class Linear_FERM:
                    if self.dataset.target[idx] == 1 and ex[self.sensible_feature] == self.val0]
             average_not_A_1 = np.mean(tmp, 0)
             self.u = -(average_A_1 - average_not_A_1)
-        new_examples = np.array([ex if ex[self.sensible_feature] == self.val0 else ex + self.u for ex in examples])
-        new_examples = np.delete(new_examples, self.sensible_feature, 1)
+            self.max_i = np.argmax(self.u)
+
+        new_examples = np.array([ex - self.u * (ex[self.max_i] / self.u[self.max_i]) for ex in examples])
+        new_examples = np.delete(new_examples, self.max_i, 1)
         return new_examples
 
     def predict(self, examples):
         if self.u is None:
             print('Model not trained yet!')
             return 0
-        new_examples = np.array([ex if ex[self.sensible_feature] == self.val0 else ex + self.u for ex in examples])
-        new_examples = np.delete(new_examples, self.sensible_feature, 1)
+
+        new_examples = np.array([ex - self.u * (ex[self.max_i] / self.u[self.max_i]) for ex in examples])
+        new_examples = np.delete(new_examples, self.max_i, 1)
         prediction = self.model.predict(new_examples)
         return prediction
 
@@ -54,12 +58,16 @@ class Linear_FERM:
         self.u = -(average_A_1 - average_not_A_1)
 
         # Application of the new representation
-        newdata = np.array([ex if ex[self.sensible_feature] == self.val0 else ex + self.u for ex in self.dataset.data])
-        newdata = np.delete(newdata, self.sensible_feature, 1)
+        self.max_i = np.argmax(self.u)
+
+        newdata = np.array([ex - self.u * (ex[self.max_i] / self.u[self.max_i]) for ex in self.dataset.data])
+        newdata = np.delete(newdata, self.max_i, 1)
+
         self.dataset = namedtuple('_', 'data, target')(newdata, self.dataset.target)
 
         # Fitting the linear model by using the new data
-        self.model.fit(self.dataset.data, self.dataset.target)
+        if self.model:
+            self.model.fit(self.dataset.data, self.dataset.target)
 
 
 if __name__ == "__main__":
