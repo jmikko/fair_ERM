@@ -3,6 +3,7 @@ import pandas as pd
 import sklearn.preprocessing as preprocessing
 from collections import namedtuple
 from sklearn.preprocessing import StandardScaler
+from toy_data import generate_toy_data
 
 
 def load_adult(smaller=False, scaler=True):
@@ -84,3 +85,15 @@ def load_adult(smaller=False, scaler=True):
         data = namedtuple('_', 'data, target')(datamat[:len_train, :-1], target[:len_train])
         data_test = namedtuple('_', 'data, target')(datamat[len_train:, :-1], target[len_train:])
     return data, data_test
+
+
+def load_toy_test():
+    # Load toy test
+    n_samples = 100 * 2
+    n_samples_low = 20 * 2
+    n_dimensions = 10
+    X, y, sensible_feature_id, _, _ = generate_toy_data(n_samples=n_samples,
+                                                        n_samples_low=n_samples_low,
+                                                        n_dimensions=n_dimensions)
+    data = namedtuple('_', 'data, target')(X, y)
+    return data, data
