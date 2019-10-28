@@ -85,7 +85,7 @@ We show here the 3D t-SNE plot of the two representations (original and fair):
 It is easy to note that, when the fair representation is applied, the two groups are indistinguishable.
 
 
-#How to cite
+# How to cite
 
 The idea of this code is from the following paper:
 
