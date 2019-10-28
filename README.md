@@ -77,7 +77,7 @@ Once the data is loaded, we simply run the following code:
     print('New fair representation done!')
 ```
 
-We show here the 3D t-SNE plot of the two representation:
+We show here the 3D t-SNE plot of the two representations (original and fair):
 
 ![toy_tsne_original](figures/toy_tsne_original.png)
 ![toy_tsne_fair](figures/toy_tsne_fair.png)
