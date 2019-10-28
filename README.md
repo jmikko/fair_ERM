@@ -85,7 +85,7 @@ We show here the 3D t-SNE plot of the two representation:
 It is easy to note that, when the fair representation is applied, the two groups are indistinguishable.
 
 
-__How to cite:__
+#How to cite
 
 The idea of this code is from the following paper:
 
@@ -95,10 +95,11 @@ arXiv preprint arXiv:1802.08626 (2018).* __[ACCEPTED @ NIPS 2018]__
 
 Bibtex citation:
 ```
-@article{donini2018empirical,
-  title={Empirical Risk Minimization under Fairness Constraints},
-  author={Donini, Michele and Oneto, Luca and Ben-David, Shai and Shawe-Taylor, John and Pontil, Massimiliano},
-  journal={arXiv preprint arXiv:1802.08626},
+@inproceedings{donini2018empirical,
+  title={Empirical risk minimization under fairness constraints},
+  author={Donini, Michele and Oneto, Luca and Ben-David, Shai and Shawe-Taylor, John S and Pontil, Massimiliano},
+  booktitle={Advances in Neural Information Processing Systems},
+  pages={2791--2801},
   year={2018}
 }
 ```
