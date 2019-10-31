@@ -11,23 +11,23 @@ if __name__ == "__main__":
     if which_data == 1:
         # Load Adult dataset
         dataset_train, dataset_test = load_adult(smaller=True, scaler=False)
-        sensible_feature = 9  # GENDER
-        sensible_feature_values = sorted(list(set(dataset_train.data[:, sensible_feature])))
-        print('Different values of the sensible feature', sensible_feature, ':', sensible_feature_values)
+        sensible_feature = dataset_train.data[:, 9]  # GENDER
+        sensible_feature_values = sorted(list(set(sensible_feature)))
+        print('Different values of the sensible feature:', sensible_feature_values)
         ntrain = len(dataset_train.target)
     elif which_data == 2:
         # Load toy test
         dataset_train, dataset_test = load_toy_test()
-        sensible_feature = len(dataset_train.data[1, :]) - 1
-        sensible_feature_values = sorted(list(set(dataset_train.data[:, sensible_feature])))
-        print('Different values of the sensible feature', sensible_feature, ':', sensible_feature_values)
+        sensible_feature = dataset_train.data[:, len(dataset_train.data[1, :]) - 1]
+        sensible_feature_values = sorted(list(set(sensible_feature)))
+        print('Different values of the sensible feature:', sensible_feature_values)
         ntrain = len(dataset_train.target)
 
     # Linear FERM
-    list_of_sensible_feature_test = dataset_test.data[:, sensible_feature]
     # We do not need to fit a model -> model=None
     algorithm = Linear_FERM(dataset=dataset_train, model=None, sensible_feature=sensible_feature)
     # Linear fair representation
+    algorithm.fit()
     new_dataset_train = algorithm.new_representation(dataset_train.data)
     print('New fair representation done!')
 
@@ -40,8 +40,8 @@ if __name__ == "__main__":
 
     positive = dataset_train.target == 1
     negative = dataset_train.target != 1
-    groupA = dataset_train.data[:, sensible_feature] == sensible_feature_values[0]
-    groupB = dataset_train.data[:, sensible_feature] != sensible_feature_values[0]
+    groupA = sensible_feature == sensible_feature_values[0]
+    groupB = sensible_feature != sensible_feature_values[0]
     positive_groupA = positive * groupA
     positive_groupB = positive * groupB
     negative_groupA = negative * groupA

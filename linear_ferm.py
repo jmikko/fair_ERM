@@ -5,64 +5,51 @@ import numpy as np
 from measures import equalized_odds_measure_TP
 from sklearn.model_selection import GridSearchCV
 from collections import namedtuple
+import sys
 
 
 class Linear_FERM:
     # The linear FERM algorithm
     def __init__(self, dataset, model, sensible_feature):
         self.dataset = dataset
-        self.values_of_sensible_feature = list(set(dataset.data[:, sensible_feature]))
-        self.list_of_sensible_feature_train = dataset.data[:, sensible_feature]
+        self.values_of_sensible_feature = list(set(sensible_feature))
+        self.list_of_sensible_feature_train = sensible_feature
         self.val0 = np.min(self.values_of_sensible_feature)
         self.val1 = np.max(self.values_of_sensible_feature)
         self.model = model
-        self.sensible_feature = sensible_feature
         self.u = None
         self.max_i = None
 
     def new_representation(self, examples):
         if self.u is None:
-            tmp = [ex for idx, ex in enumerate(self.dataset.data)
-                   if self.dataset.target[idx] == 1 and ex[self.sensible_feature] == self.val1]
-            average_A_1 = np.mean(tmp, 0)
-            tmp = [ex for idx, ex in enumerate(self.dataset.data)
-                   if self.dataset.target[idx] == 1 and ex[self.sensible_feature] == self.val0]
-            average_not_A_1 = np.mean(tmp, 0)
-            self.u = -(average_A_1 - average_not_A_1)
-            self.max_i = np.argmax(self.u)
+            sys.exit('Model not trained yet!')
+            return 0
 
         new_examples = np.array([ex - self.u * (ex[self.max_i] / self.u[self.max_i]) for ex in examples])
         new_examples = np.delete(new_examples, self.max_i, 1)
         return new_examples
 
     def predict(self, examples):
-        if self.u is None:
-            print('Model not trained yet!')
-            return 0
-
-        new_examples = np.array([ex - self.u * (ex[self.max_i] / self.u[self.max_i]) for ex in examples])
-        new_examples = np.delete(new_examples, self.max_i, 1)
+        new_examples = self.new_representation(examples)
         prediction = self.model.predict(new_examples)
         return prediction
 
     def fit(self):
         # Evaluation of the empirical averages among the groups
         tmp = [ex for idx, ex in enumerate(self.dataset.data)
-               if self.dataset.target[idx] == 1 and ex[self.sensible_feature] == self.val1]
+               if self.dataset.target[idx] == 1 and self.list_of_sensible_feature_train[idx] == self.val1]
         average_A_1 = np.mean(tmp, 0)
         tmp = [ex for idx, ex in enumerate(self.dataset.data)
-               if self.dataset.target[idx] == 1 and ex[self.sensible_feature] == self.val0]
+               if self.dataset.target[idx] == 1 and self.list_of_sensible_feature_train[idx] == self.val0]
         average_not_A_1 = np.mean(tmp, 0)
 
         # Evaluation of the vector u (difference among the two averages)
         self.u = -(average_A_1 - average_not_A_1)
-
-        # Application of the new representation
         self.max_i = np.argmax(self.u)
 
+        # Application of the new representation
         newdata = np.array([ex - self.u * (ex[self.max_i] / self.u[self.max_i]) for ex in self.dataset.data])
         newdata = np.delete(newdata, self.max_i, 1)
-
         self.dataset = namedtuple('_', 'data, target')(newdata, self.dataset.target)
 
         # Fitting the linear model by using the new data
@@ -104,7 +91,7 @@ if __name__ == "__main__":
     print('\n\n\nGrid search for our method...')
     svc = svm.SVC()
     clf = GridSearchCV(svc, param_grid, n_jobs=1)
-    algorithm = Linear_FERM(dataset_train, clf, sensible_feature)
+    algorithm = Linear_FERM(dataset_train, clf, dataset_train.data[:, sensible_feature])
     algorithm.fit()
     print('Best Fair Estimator::', algorithm.model.best_estimator_)
 

@@ -39,14 +39,14 @@ class FERM(BaseEstimator):
             self.fkernel = linear_kernel
 
         if self.fairness:
-            self.values_of_sensible_feature = list(set(X[:, self.sensible_feature]))
-            self.list_of_sensible_feature_train = X[:, self.sensible_feature]
+            self.values_of_sensible_feature = list(set(self.sensible_feature))
+            self.list_of_sensible_feature_train = self.sensible_feature
             self.val0 = np.min(self.values_of_sensible_feature)
             self.val1 = np.max(self.values_of_sensible_feature)
             self.set_A1 = [idx for idx, ex in enumerate(X) if y[idx] == 1
-                           and ex[self.sensible_feature] == self.val1]
+                           and self.sensible_feature[idx] == self.val1]
             self.set_not_A1 = [idx for idx, ex in enumerate(X) if y[idx] == 1
-                               and ex[self.sensible_feature] == self.val0]
+                               and self.sensible_feature[idx] == self.val0]
             self.set_1 = [idx for idx, ex in enumerate(X) if y[idx] == 1]
             self.n_A1 = len(self.set_A1)
             self.n_not_A1 = len(self.set_not_A1)
@@ -170,7 +170,7 @@ if __name__ == "__main__":
 
     #  FERM algorithm
     print('\n\n\nGrid search for our method...')
-    algorithm = FERM(sensible_feature=sensible_feature)
+    algorithm = FERM(sensible_feature=dataset_train.data[:, sensible_feature])
     clf = GridSearchCV(algorithm, param_grid, n_jobs=1)
     clf.fit(dataset_train.data, dataset_train.target)
     print('Best Fair Estimator:', clf.best_estimator_)
