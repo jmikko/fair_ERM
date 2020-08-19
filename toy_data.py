@@ -51,7 +51,7 @@ if __name__ == "__main__":
     plt.scatter(X[0:n_samples * 2:step, 0], X[0:n_samples * 2:step, 1], marker='o', s=point_size, c=y[0:n_samples * 2:step], edgecolors='k', label='Group A', alpha=alpha)
     plt.scatter(X[n_samples * 2::step, 0], X[n_samples * 2::step, 1], marker='s', s=point_size, c=y[n_samples * 2::step], edgecolors='k', label='Group B', alpha=alpha)
     plt.legend()
-    plt.title("Dataset")
+    plt.title("Generated Dataset")
     plt.colorbar()
 
     sensible_feature_values = sorted(list(set(X[:, sensible_feature])))
