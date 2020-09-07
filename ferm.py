@@ -14,7 +14,7 @@ from sklearn.metrics.pairwise import rbf_kernel
 
 # Definition of different kernels
 def linear_kernel(x1, x2):
-    return np.dot(x1, x2)
+    return np.dot(x1, np.transpose(x2))
 
 def gaussian_kernel(x, y, gamma=0.1):
     return np.exp(-gamma * (linalg.norm(x - y)**2))
@@ -47,6 +47,11 @@ class FERM(BaseEstimator):
                            and self.sensible_feature[idx] == self.val1]
             self.set_not_A1 = [idx for idx, ex in enumerate(X) if y[idx] == 1
                                and self.sensible_feature[idx] == self.val0]
+            # print('self.val0:', self.val0)
+            # print('self.val1:', self.val1)
+            # print('(y, self.sensible_feature):')
+            # for el in zip(y, self.sensible_feature):
+            #     print(el)
             self.set_1 = [idx for idx, ex in enumerate(X) if y[idx] == 1]
             self.n_A1 = len(self.set_A1)
             self.n_not_A1 = len(self.set_not_A1)
@@ -78,12 +83,18 @@ class FERM(BaseEstimator):
         if self.fairness:
             tau = [(np.sum(K[self.set_A1, idx]) / self.n_A1) - (np.sum(K[self.set_not_A1, idx]) / self.n_not_A1)
                    for idx in range(len(y))]
+            # print('self.n_A1:', self.n_A1)
+            # print('self.n_not_A1:', self.n_not_A1)
+            # print('tau:', tau)
             fairness_line = matrix(y * tau, (1, n_samples), 'd')
             A = cvxopt.matrix(np.vstack([A, fairness_line]))
             b = cvxopt.matrix([0.0, 0.0])
 
         # solve QP problem
         cvxopt.solvers.options['show_progress'] = False
+        # print('A:', A)
+        # print('Rank(A):', np.linalg.matrix_rank(A))
+        # print('Rank([P; A; G])', np.linalg.matrix_rank(np.vstack([P, A, G])))
         solution = cvxopt.solvers.qp(P, q, G, h, A, b)
 
         # Lagrange multipliers
